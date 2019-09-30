@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#checking for uncommited code
+if git status | grep -q 'nothing to commit, working tree clean'; 
+then
+  echo "No code to commit"
+else
+  echo "You have uncommited code in your branch!"
+  echo "Commit before continuing!"
+  exit 0
+fi
+
 #gotests
 echo "~~~~~~~~~~Running gotests for appenginenvm...~~~~~~~~~~"
 ./gotests
@@ -15,19 +25,15 @@ echo "~~~~~~~~~~Finished gotests for appengine!~~~~~~~~~~"
 
 #codecov
 echo "~~~~~~~~~~Running Code Coverage Comparison...~~~~~~~~~~"
-./gotests --vm --coverage
-if ![git status | grep -q 'nothing to commit, working tree clean']; then
-  echo "You have uncommited code in your branch!"
-  echo "Commit before continuing!"
-  return
-fi
 current_branch=$(git branch | grep \* | cut -d ' ' -f2)
 echo "~Current branch: $current_branch~"
 echo "~Getting code coverage for master...~"
 git checkout master
+git stash
 git pull
 ./gotests --vm --coverage > masterCodeCov.txt
 git checkout $current_branch
+git stash
 echo "~Getting code coverage for current branch...~"
 ./gotests --vm --coverage > currentCodeCov.txt
 
