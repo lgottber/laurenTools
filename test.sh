@@ -31,17 +31,17 @@ echo "~Getting code coverage for master...~"
 git checkout master
 git stash
 git pull
-./gotests --vm --coverage > masterCodeCov.txt
+./gotests --vm --coverage > /var/tmp/masterCodeCov.txt
 git checkout $current_branch
 git stash
 echo "~Getting code coverage for current branch...~"
-./gotests --vm --coverage > currentCodeCov.txt
+./gotests --vm --coverage > /var/tmp/currentCodeCov.txt
 
 echo "~~~~~Diff between master and current code coverage:"
 diff -y --suppress-common-lines masterCodeCov.txt currentCodeCov.txt
 
 echo "Removing text files"
-rm masterCodeCov.txt
-rm currentCodeCov.txt
+rm /var/tmp/masterCodeCov.txt
+rm /var/tmp/currentCodeCov.txt
 echo "~~~~~~~~~~Finished Code Coverage Comparison!~~~~~~~~~~"
 echo "~~~~~~~~~~Finished tests!~~~~~~~~~~"
